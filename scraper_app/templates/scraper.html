@@ -1,0 +1,121 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/scraper.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+
+    <script src="{% static 'scripts/scraper.js' %}"></script>
+ <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+ <script>
+    function changeBackground(){
+    // Neue Videoquelle
+var oldSource = "{% static 'videos/background.mp4' %}";
+var newSource = "{% static 'videos/load (2).mp4' %}";
+// Videoelement und Quellen-Element auswählen
+var video = document.getElementById("video-background");
+var source = document.getElementById("video-source");
+var number = source.dataset.number;
+if (number == "old"){
+source["src"] = newSource;
+source.dataset.number ="new";
+}
+else{
+source["src"] = oldSource;
+source.dataset.number ="old";
+}
+video.load();
+}
+ </script>
+    <title>Webscraper</title>
+</head>
+<body>
+    <video id="video-background" autoplay loop muted>
+        <source id="video-source" src="{% static 'videos/background.mp4' %}" data-number="old"type="video/mp4">
+      </video>
+      
+<div class="container">
+    <div class="search">
+        <p>Search for substances</p>
+        <form action="" method="post" id="form">
+        <select id="select" onchange="selectFunction()" name="select">
+            {%for opt in keys%}
+            <option value="{{opt}}">{{opt|upper}}</option>
+            {%endfor%}
+        </select>
+            {% csrf_token %}
+            <input type="search" id="search_field" name="search_field">
+            <div id="suggestionList">
+
+            </div>
+            <input type="number" id="abweichung" placeholder="Tolaranz +/-" step="0.1" form="form" name="abweichung">
+            <input type="submit" value="search" id="submit_button">
+        </form>
+        <div class="Exchanger">
+            <button class="process" id="proccessJsonFile">Insert Data</button>
+            <button class="generate"  id="generateJsonFile">Generate Data</button>
+        </div>
+    </div>
+    <div class="modi_div">
+        <button class="modi" id="reset_db">reset database</button>
+        <button class="modi" id="load_new_substances">load new substances </button>
+        <button class="modi"  id="delete_search_results">Delete Search Results</button>
+</div>    
+{%if selected != None%}
+<div style="position: absolute; left: 40%; top: 1.1%; font-size: 25px; color: rgb(201, 214, 16); opacity: 0.5;"><h1>{{ answer|length }} {% if answer|length == 1 %}RESULT{% else %}RESULTS{% endif %}</h1></div>
+{% endif %}
+
+<div class="show_witz"></div>
+<div class="progress_message">Please wait until completion</div>
+<div class="progressbar">
+</div>
+{% if selected != None%}
+<div class="show_massebereich">
+{% for substance in answer %}
+<div class="show_one">
+    <ul>
+        <li><strong>Names:</strong>{% for name in substance.names %}<br>------- {{name}}{% endfor %}</li>
+        <li><strong>IUPAC NAMES:</strong>{% for name in substance.iupac_names %}<br>------- {{name}} {% endfor %}</li>
+        <li><strong>Formular:</strong> {{ substance.formula }}</li>
+        <li><strong>Molecular Weight:</strong> {{ substance.molecular_mass}}</li>
+        <li><strong>InChi:</strong> {{ substance.inchi }}</li>
+        <li><strong>InChi Key:</strong> {{ substance.inchi_key }}</li>
+        <li><strong>SMILES:</strong> {{ substance.smiles }}</li>
+        {% if substance.categories|length > 1 %}
+        <li><strong>Category Tag:</strong>
+        {% for name in substance.categories %}
+        <br>{{forloop.counter}}.{{ name }}
+        {% endfor %}
+        </li>
+    {% else %}
+        <li><strong>Category Tag:</strong><br>{{ substance.category }}</li>
+    {% endif %}
+    
+        <li><strong>Url:</strong><a href={{substance.source_url}}>{{substance.source.url}}</a></li>
+        <li><strong>Soure Website:</strong> {{ substance.source.name }}</li>
+        <li><strong>Valid:</strong> {{ substance.validated}}</li>
+        <li><strong>Last Changed At:</strong> {{ substance.last_modified}}</li>
+        <li><strong>Version:</strong> {{ substance.version }}</li>
+        {%if substance.details|length > 1 %}
+        <li><strong>Zusätzliche Informationen:</strong><br>{% for name in substance.details %}{{name}}<br>{% endfor %}</li>
+        {%endif%}
+    </ul>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+<script src="{% static 'scripts/scraper.js' %}"></script>
+
+</body>
+</html> 
