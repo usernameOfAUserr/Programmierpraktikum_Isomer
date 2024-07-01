@@ -6,7 +6,6 @@ import time
 from bs4 import BeautifulSoup
 import re
 from periodictable import formula
-from .getCategory import get_category
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
 from .models import Substances
@@ -21,10 +20,8 @@ previous_categorys = {}
 gathered_substances = []
 getDataObject = getData()
 
-
 not_reachable = []
 counter = 0
-
 
 async def find_not_reachable_urls(session, url):
     global counter
@@ -50,7 +47,6 @@ async def manage(urls): #here is tested if the urls that were previous not acces
         tasks = [find_not_reachable_urls(session, url) for url in urls]
         await asyncio.gather(*tasks)
 
-
 def getReachableUrls():
     counter = 0
     try:
@@ -59,10 +55,7 @@ def getReachableUrls():
         previous_not_reachable = file["not_reachable"]
         
         print("not_reachable loaded")
-        with open("category_json_file.json","r") as file:
-            global previous_categorys
-            previous_categorys = json.load(file)
-            print("categorys loaded")
+    
         asyncio.run(manage(previous_not_reachable))
  
     except:
@@ -75,12 +68,9 @@ def getReachableUrls():
     }
     with open("not_reachable_urls.json", "w") as file: #the json file that contains all not reachable urls is updated
         json.dump(data, file)
-    data = {
-        "new_ones": changes_accoure
-    }
+   
     print(str(changes_accoure))
     if changes_accoure is not None:
         print("changes_accoure")
         getDataObject.start(changes_accoure)
     return changes_accoure
-

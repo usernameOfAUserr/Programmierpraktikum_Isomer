@@ -5,7 +5,6 @@ import os
 import time
 import re
 from periodictable import formula
-from .getCategory import getCategorys
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
 from .models import Substances
@@ -31,7 +30,7 @@ class Exchanger:
         substances_in_db = target_db.objects.all()
         first_sub = target_db.objects.first()
         keys = first_sub.__dict__.keys()
-        keys_to_remove = ['_state', 'id']
+        keys_to_remove = ['_state', 'id','ID']
         usefull_keys = [key for key in keys if key not in keys_to_remove]
         i = 0
         print(usefull_keys)

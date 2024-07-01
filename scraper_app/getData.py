@@ -6,7 +6,6 @@ import os
 import time
 from bs4 import BeautifulSoup
 import re
-from periodictable import formula
 from .new_getCategory import getCategorys
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
@@ -15,6 +14,7 @@ from .Store import Store
 from datetime import datetime, timezone
 
 class getData:
+    html_errors = 0
     Storer = Store()
     progress = 0
     gatherd_substances = []
@@ -46,7 +46,7 @@ class getData:
 
                 # extrac informations from data
                 
-                all_clippable = data.findAll(class_='clippable')
+                all_clippable = data.findAll(class_='clippable')  #so i can calculate exactly
                 number_of_clippable = len(all_clippable)
 
                 # names and iupac, can be tricky because sometimes, there are no names as well as no iupac, so it has to be calculated what exactly is there
@@ -86,7 +86,7 @@ class getData:
          
                 except:
                     print(f"error by url {url}, data_quantity: {number_of_clippable}")
-
+                    self.html_errors = self.html_errors + 1
 
                 # index & category
                 category = []
@@ -97,19 +97,10 @@ class getData:
                 id = data.find(id='substance-id').text
                 if id in self.categorys.keys():
                     category =self.categorys[id]
-                    """
-                        needed_format_of_url = "https://isomerdesign.com/PiHKAL/search.php?domain=tk&id="+str(id)
-                        if needed_format_of_url in self.categorys.keys():
-                            category.append(self.categorys[needed_format_of_url])
-                            print(self.categorys[needed_format_of_url])
-                         elif url in self.categorys.keys():
-                            category.append(self.categorys[url])
-                            print(self.categorys[url])
-                    """
+       
                 if len(category) == 0:
                     category.append("unknown")
                 # formular
-                all_clippable = data.findAll(class_='clippable')
                 number_of_clippable = len(data.findAll(class_='clippable'))
                 formular = all_clippable[number_of_clippable-5].text
                 # molecular_weight
@@ -157,7 +148,6 @@ class getData:
                     "details": {},
                 }
                 self.gatherd_substances.append(data_dict)
-                
                 return True
         except Exception as e:
             print(f"Fehler beim Abrufen der URL {url}: {e}")
@@ -167,9 +157,6 @@ class getData:
 
     async def get_responses(self, urls):
 
-        folder = "response_data"  # Der Zielordner, in dem die JSON-Dateien gespeichert werden sollen
-        os.makedirs(folder, exist_ok=True)  # Erstellen Sie den Ordner, falls er nicht existiert
-        # the list with all urls is created
         try:
             timeout = aiohttp.ClientTimeout(total=None, connect=None, sock_connect=None, #total timelimit for the whole reques /
 
@@ -189,14 +176,19 @@ class getData:
         self.progress = 0
         if urls is None:
             urls = [f"https://isomerdesign.com/pihkal/explore/{i}" for i in range(1, 17000)]
-        reuse_old_categorys = True
+        reuse_old_categorys = False
         if reuse_old_categorys:
             with open("cateogry_id_json_file.json", 'r') as f: 
                 self.categorys = json.load(f)
         else:
-            self.categorys = getCategorys() 
+            try:
+                self.categorys = getCategorys() 
+            except:
+                with open("cateogry_id_json_file.json", 'r') as f: 
+                    self.categorys = json.load(f)
         # #load the categorys from external file in order to improve the speed, categorys are NOT!!! loaded in in this run
         asyncio.run(self.get_responses(urls))
         self.Storer.Substances(self.gatherd_substances)
+        print("Errors: " + str(self.html_errors))
 
     

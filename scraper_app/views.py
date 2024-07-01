@@ -16,12 +16,12 @@ import aiohttp, asyncio
 from .Exchanger import Exchanger
 
 # Create your views here.
-
 latest_search_results = []
 getDataObject = getData()
 JS = Substances.objects.all()
 keys = [field.name for field in Substances._meta.fields]
-
+keys.remove("ID")
+print(keys)
 model_fields_that_are_lists = ["names", "details", "iupac_names", "categories"]
 
 def scraper(request):
@@ -188,6 +188,7 @@ def generateJsonFile(request):
 def processJsonInput(request):
     how_many_files = 0
     folder_path = "scraper_app\\files_to_insert"
+
     for filename in os.listdir(folder_path):
         how_many_files = how_many_files+1
         print(filename)
@@ -197,11 +198,11 @@ def processJsonInput(request):
             exchanger = Exchanger()
             exchanger.process(data_to_insert)
     if how_many_files >0:
-        return HttpResponse(str(how_many_files)+ " Files successfuly processed and stred")
-   
-    return HttpResponse("There are no files in "+", add one in the dictionary")
+        return HttpResponse(str(how_many_files)+ " Files successfuly processed and stored")
+    abs_path = os.path.abspath(folder_path)
+    return HttpResponse("There are no files in \n"+abs_path+"\n add one in the dictionary")
 
-def my_api(request):
+def search_suggestion(request):  #for the search suggestion
     
         category = request.GET.get('category')
         searched = request.GET.get('searched')

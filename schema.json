@@ -1,0 +1,102 @@
+{
+    "type": "array",
+    "items":
+    {
+        "type": "object",
+        "required": [
+            "version",
+            "smiles",
+            "names",
+            "iupac_names",
+            "formula",
+            "inchi",
+            "inchi_key",
+            "molecular_mass",
+            "cas_num",
+            "categories",
+            "source",
+            "validated",
+            "deleted",
+            "last_modified",
+            "details"
+        ],
+        "additionalProperties": false,
+        "properties": {
+            "version": {
+                "type": "string"
+            },
+            "smiles": {
+                "type": "string"
+            },
+            "names": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "iupac_names": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "formula": {
+                "type": "string"
+            },
+            "inchi": {
+                "type": "string"
+            },
+            "inchi_key": {
+                "type": "string"
+            },
+            "molecular_mass": {
+                "type": "number"
+            },
+            "cas_num": {
+                "type": "string"
+            },
+            "categories": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "source": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "url"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "validated": {
+                "anyOf": [
+                    {
+                        "type": "boolean"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "deleted": {
+                "type": "boolean"
+            },
+            "last_modified": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "details": {
+                "type": "object"
+            }
+        }
+}
+}

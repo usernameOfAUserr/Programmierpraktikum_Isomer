@@ -45,7 +45,9 @@ function show_reset_progress(resetInterval){
                 document.querySelector('.show_witz').style["display"]= "none";
                  try{  
                 var answer = document.querySelector('.answer');
-                 answer.style["display"] = "flex";}
+                 answer.style["display"] = "flex";
+                 new_substances_loaded("Substances are scraped, please wait until the are stored in the Database");
+                }
                  catch{
                     
                  }
@@ -69,7 +71,7 @@ function show_reset_progress(resetInterval){
             show_witz.style["display"] = "flex";
             show_witz.innerHTML = response.witz;
         },
-        error:function(response){alert("error")},
+        error:function(response){new_substances_loaded("error")},
     });
 }
 
@@ -114,7 +116,7 @@ async function load_new_substances() {
         new_substances_loaded(message);
         changeBackground();
     } catch (error) {
-        alert("not possible, try to reload whole db");
+        new_substances_loaded("not possible, try to reload whole db");
     }
 }
 
@@ -152,7 +154,7 @@ function new_substances_loaded(message){
         skull_video.style.display = "none";
         document.querySelector(".container").style["background-color"] = "transparent";
         show_message.style["display"] = "none";
-    }, 1500);
+    }, 1000);
     dismis.onclick=function(){
     message_div.remove();
     show_message.remove();
@@ -186,28 +188,32 @@ try{
             type: "GET",
             url:"webscraper/generate",
             success:function(response){
-                alert("Here is the path to the generated File: "+ response)
+                new_substances_loaded("Here is the path to the generated File: "+ response);
             }
         }
     );
   
 
 }catch(Exeption ){
-    alert("This action isnt possible");
+    new_substances_loaded("This action isnt possible");
 }
 }
 function proccesJsonFile(){
-
+    var err = false
     $.ajax({
         type:"GET",
         url:"webscraper/processJsonInput",
         success:function(response){
-            alert(str(response));
-        },
+            new_substances_loaded(response);
+            err = true
+            },
         error:function(response){
-            alert("File couldnt be stored");
+            new_substances_loaded("File couldnt be stored");
         },
     })
+    setTimeout(()=>{
+        if(err == false){new_substances_loaded("Starting to process the Files in the Directory: files_to_insert\nplease wait until completion\nyou will be informed");}
+    },1500);
 }
 function get_search_category(){
 return $('#select').val();
@@ -222,6 +228,7 @@ var category = get_search_category();
 var what_is_searched = get_what_is_searched();
 
 if((what_is_searched.length >= 2 && category!="molecular_mass" && category!="smiles" )|| (what_is_searched.length > 5 && category=="smiles") || category=="category"){
+
     data={
         category: category,
         searched: what_is_searched,
@@ -229,7 +236,7 @@ if((what_is_searched.length >= 2 && category!="molecular_mass" && category!="smi
 
     $.ajax({
         type:"GET",
-        url:"webscraper/my_api",
+        url:"webscraper/search_suggestion",
         data:data,
         success:(response)=>{
             let suggestions = response;
@@ -242,13 +249,13 @@ if((what_is_searched.length >= 2 && category!="molecular_mass" && category!="smi
 
 
 function delete_search_results() {
-alert("Delete request made");
+    new_substances_loaded("Delete request made");
 $.ajax({
     type: 'GET',
     url: "webscraper/delete_search_result",
 
     success: function(response) {
-        alert("Delete request successful");
+        new_substances_loaded("Delete request successful");
         // Hier kannst du die Antwort des Servers verarbeiten, wenn benötigt
     },
     error: function(xhr, status, error) {
