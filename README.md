@@ -28,3 +28,6 @@ DB: Uses Django models in models.py. You can change it by writing whatever you w
 Note: When there are problems with changing the DB structure, generate a JSON file with all substances of the DB, then delete db.sqlite3 and create a new DB with python manage.py migrate, and then insert the substances.
 Coordination and Management: The functions are managed in views.py.
 Scraper Application: The names of the .py files in scraper_app are self-explanatory.
+
+LOGGING:
+the logging files are in logging_directory
