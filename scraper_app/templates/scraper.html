@@ -101,8 +101,8 @@ video.load();
         <li><strong>Category Tag:</strong><br>{{ substance.category }}</li>
     {% endif %}
     
-        <li><strong>Url:</strong><a href={{substance.source_url}}>{{substance.source.url}}</a></li>
-        <li><strong>Soure Website:</strong> {{ substance.source.name }}</li>
+    <li><strong>Url:</strong><a href="{{ substance.source.url }}">{{ substance.source.url }}</a></li>
+    <li><strong>Soure Website:</strong> {{ substance.source.name }}</li>
         <li><strong>Valid:</strong> {{ substance.validated}}</li>
         <li><strong>Last Changed At:</strong> {{ substance.last_modified}}</li>
         <li><strong>Version:</strong> {{ substance.version }}</li>

@@ -1,7 +1,7 @@
 from .models import Substances
 
 class Store:
-    def Substances(self, list_of_substances):
+    def Substances(self, list_of_substances, testing=False):
         """
         Process a list of substance dictionaries and store them in the database.
         If a substance with the same source, names, and formula exists, it is deleted before creating a new record.
@@ -61,11 +61,14 @@ class Store:
                         details=validated_data_dict['details'],
                         last_modified=validated_data_dict['last_modified']
                     )
-                    print(validated_data_dict["smiles"])
+                    if testing is True:
+                        return Substances.objects.filter(source=validated_data_dict["source"], names=validated_data_dict["names"], formula=validated_data_dict["formula"])
                 except Exception as e:
                     # Log any errors that occur during the creation of the Substances object
                     print(f"An error occurred: {e}")
+
                                 
             except Exception as e:
                 # Log any errors that occur during the processing of the substance
                 print(f"An error occurred: {e}")
+        

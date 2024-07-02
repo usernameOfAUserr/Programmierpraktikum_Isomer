@@ -31,3 +31,6 @@ Scraper Application: The names of the .py files in scraper_app are self-explanat
 
 LOGGING:
 the logging files are in logging_directory
+
+TESTING:
+if you want to to test the application, set the boolean variable testing in scraper_app/views.py-> line 16 to True
