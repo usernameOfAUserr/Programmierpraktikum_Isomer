@@ -34,3 +34,4 @@ the logging files are in logging_directory
 
 TESTING:
 if you want to to test the application, set the boolean variable testing in scraper_app/views.py-> line 16 to True
+then, when you run the server, the testing takes place immediately in the begining

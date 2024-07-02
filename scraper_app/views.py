@@ -9,7 +9,7 @@ from .getReachableUrls import getReachableUrls
 from django.template.defaultfilters import stringfilter
 import aiohttp, asyncio
 from .Exchanger import Exchanger
-
+#if testing is set to True, when the Server is running, in the begining the core functions are tested
 testing = True
 
 from .getCategory import test_getCategory_Class
@@ -17,7 +17,7 @@ if testing:
     print("Testing is Running")
     test_getCategory_Object = test_getCategory_Class()
     test_getData_Object = getData()
-    test_getCategory_Object.test_getCategorys()
+    test_getCategory_Object.test_getCategorys() 
     test_getData_Object.test_getData()
     print("Testing is finished")
 
@@ -31,7 +31,8 @@ print(keys)
 model_fields_that_are_lists = ["names", "details", "iupac_names", "categories"]
 
 def scraper(request):
-    if request.method == "POST":
+    if request.method == "POST": 
+        #if the user searches sth, this is processed here
         requested = []
         selected = request.POST.get('select')
         searched = request.POST.get('search_field')
@@ -142,7 +143,7 @@ def reset_database(request):
     getDataObject.start(None)
     return HttpResponse("Database was fully restored")
     
-def request_how_many_json_file(request):
+def request_how_many_json_file(request): #this is just for the progress bar 
     progress = getDataObject.getProgress()
     return JsonResponse({"progress":progress})
     
@@ -160,6 +161,7 @@ def delete_search_results(request):
     return HttpResponse(200)
 
 def search_for_newcomers(request):
+    #this implements the second modi(if new substances were added, it adds the to the db)
     new_ones = getReachableUrls()
     print("stroed in db")
     return JsonResponse({"newSubstances": new_ones})
@@ -190,13 +192,13 @@ def get_witz(request):
 #####################################################################
 
 def generateJsonFile(request):
-    exchanger = Exchanger()
-    path_to_file = exchanger.generate("example_name")
-    return HttpResponse(path_to_file)
+    exchanger = Exchanger()   #the class thats generates the File
+    path_to_file = exchanger.generate("example_name")  #the method to generate the fil
+    return HttpResponse(path_to_file) #shows the user where the generated file is stored
 
 def processJsonInput(request):
     how_many_files = 0
-    folder_path = "scraper_app\\files_to_insert"
+    folder_path = "scraper_app\\files_to_insert" #sets the place where the files that should be integrated MUST be stored
 
     for filename in os.listdir(folder_path):
         how_many_files = how_many_files+1
@@ -211,7 +213,7 @@ def processJsonInput(request):
     abs_path = os.path.abspath(folder_path)
     return HttpResponse("There are no files in \n"+abs_path+"\n add one in the dictionary")
 
-def search_suggestion(request):  #for the search suggestion
+def search_suggestion(request):  #for the search suggestion, just ignore that, and if there are problems with is, delete it as you please, its not functional
     
         category = request.GET.get('category')
         searched = request.GET.get('searched')

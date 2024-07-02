@@ -110,6 +110,7 @@ class getData:
                 # inChl
                 InChl_regex = re.compile(r"InChI=(.*)")
                 match = InChl_regex.search(all_clippable[number_of_clippable-3].text)
+                #to remove the inchi= 
                 inchi = match.group(1)
                 # inchl_key
                 inchi_key = all_clippable[number_of_clippable-2].text
@@ -178,7 +179,7 @@ class getData:
         self.gatherd_substances = []
         if urls is None:
             urls = [f"https://isomerdesign.com/pihkal/explore/{i}" for i in range(1, 17000)]
-        reuse_old_categorys = True
+        reuse_old_categorys = True  #when this is True, then categorys from the last time they were scraped are used
         if reuse_old_categorys:
             with open("category_id_json_file.json", 'r') as f:
                 self.categorys = json.load(f)
@@ -198,7 +199,7 @@ class getData:
             return self.gatherd_substances
 
 
-    def test_getData(self):
+    def test_getData(self):  #is used in views.py
         try:
             # Create instances of getData and Store
             getData_Object = getData()
